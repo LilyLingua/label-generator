@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "csv-parse": "^6.1.0",
+    "pdf-lib": "^1.17.1",
+    "pdfkit": "^0.17.1"
+  },
+  "scripts": {
+    "start": "node createA8Cards.js && node main.js"
+  }
+}
