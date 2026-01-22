@@ -9,6 +9,9 @@ const doc = new PDFDocument({ size: [297.64, 210.12], margin: 0 }); // A8 Querfo
 doc.pipe(fs.createWriteStream("cards_a8.pdf"));
 doc.registerFont("NotoSansBold", "fonts/NotoSans-Bold.ttf");
 
+// Arabische Schriftart explizit registrieren
+doc.registerFont("NotoSansArabic", "fonts/NotoSansArabic-Regular.ttf");
+
 const spacingFactor = 0.6;
 const borderThickness = 10.0;
 
@@ -28,7 +31,7 @@ words.forEach((entry, index) => {
 
   const singular = entry.german_article_singular || "";
   const plural = entry.german_plural || "";
-  const translation = entry.english_singular || "";
+  const translation = entry.farsi_singular || "";
 
   const { article, word } = splitArticle(singular);
 
@@ -92,13 +95,14 @@ words.forEach((entry, index) => {
     const char = plural[i];
     const same = word[i] === char;
 
-    doc
-       .fillColor(same ? "gray" : "black")
-      .text(char, x, pluralY);
+    doc.fillColor(same ? "gray" : "black").text(char, x, pluralY);
     x += doc.widthOfString(char);
   }
 
   if (translation.trim() !== "") {
+    console.log(translation);
+    doc.font("NotoSansArabic").fontSize(translationFontSize);
+
     const padding = 4;
     doc.fontSize(translationFontSize);
     const textWidth = doc.widthOfString(translation);
