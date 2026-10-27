@@ -31,9 +31,10 @@ const LANGUAGES = Object.keys(words[0])
 const LANG_ATTR = {
   english: "en", ukrainian: "uk", french: "fr", spanish: "es", farsi: "fa", arabic: "ar", hebrew: "he", turkish: "tr",
   portuguese: "pt-BR", italian: "it", romanian: "ro", dutch: "nl", georgian: "ka", hindi: "hi", thai: "th", chinese: "zh-CN",
-  japanese: "ja", korean: "ko", russian: "ru", polish: "pl", kurdish: "ku", vietnamese: "vi",
+  japanese: "ja", korean: "ko", russian: "ru", polish: "pl", kurdish: "ku", vietnamese: "vi", swahili: "sw", albanian: "sq",
+  bosnian_croatian_serbian: "bs", bulgarian: "bg", pashto: "ps", urdu: "ur", bengali: "bn", indonesian: "id", filipino: "fil",
 };
-const RTL = new Set(["farsi", "arabic", "hebrew"]);
+const RTL = new Set(["farsi", "arabic", "hebrew", "pashto", "urdu"]);
 
 const escape = (text) => text.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
@@ -73,7 +74,7 @@ function html(lang) {
   const font = `data:font/ttf;base64,${fs.readFileSync(path.join(__dirname, "fonts/NotoSans-Bold.ttf")).toString("base64")}`;
   const page = FORMAT === "a4" ? { size: "A4 landscape", w: "297mm", h: "210mm", pad: "5mm", cols: 4 } : { size: "74mm 52mm", w: "74mm", h: "52mm", pad: "0mm", cols: 1 };
   return `<!doctype html><html lang="de"><head><meta charset="utf-8">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@600&family=Noto+Sans+Hebrew:wght@600&family=Noto+Sans+Devanagari:wght@600&family=Noto+Sans+Thai:wght@600&family=Noto+Sans+Georgian:wght@600&family=Noto+Sans+SC:wght@600&family=Noto+Sans+JP:wght@600&family=Noto+Sans+KR:wght@600&display=block">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@600&family=Noto+Sans+Hebrew:wght@600&family=Noto+Sans+Devanagari:wght@600&family=Noto+Sans+Thai:wght@600&family=Noto+Sans+Georgian:wght@600&family=Noto+Sans+SC:wght@600&family=Noto+Sans+JP:wght@600&family=Noto+Sans+KR:wght@600&family=Noto+Sans+Bengali:wght@600&display=block">
 <style>
 @font-face { font-family: "Noto Sans Card"; src: url("${font}"); font-weight: 700; }
 @page { size: ${page.size}; margin: 0; }
@@ -90,7 +91,7 @@ body { font-family: "Noto Sans Card", sans-serif; font-weight: 700; color: #000;
 .pl b { color: #000; }
 .tr { position: absolute; right: 0; bottom: 0; max-width: 100%; background: #000; color: #fff; padding: 0.6mm 1.6mm 0.9mm;
   font-size: 8.5pt; line-height: 1.25; white-space: nowrap; font-family: "Noto Sans Card", "Noto Sans Arabic", "Noto Sans Hebrew",
-  "Noto Sans Devanagari", "Noto Sans Thai", "Noto Sans Georgian", "Noto Sans SC", sans-serif; }
+  "Noto Sans Devanagari", "Noto Sans Bengali", "Noto Sans Thai", "Noto Sans Georgian", "Noto Sans SC", sans-serif; }
 .tr[lang="ja"] { font-family: "Noto Sans JP", sans-serif; }
 .tr[lang="ko"] { font-family: "Noto Sans KR", sans-serif; }
 </style></head><body>${pages.join("")}

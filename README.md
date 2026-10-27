@@ -9,10 +9,11 @@ Examples: [German–English](examples/german-english.pdf) · [German–Spanish](
 
 ## Languages
 
-German only, or German plus one of 22 languages:
+German only, or German plus one of 31 languages:
 
 English · Ukrainian · French · Spanish · Farsi · Arabic · Hebrew · Turkish · Portuguese (Brazil) · Italian · Romanian ·
-Dutch · Georgian · Hindi · Thai · Chinese (simplified) · Japanese · Korean · Russian · Polish · Kurdish (Kurmanji) · Vietnamese
+Dutch · Georgian · Hindi · Thai · Chinese (simplified) · Japanese · Korean · Russian · Polish · Kurdish (Kurmanji) · Vietnamese ·
+Swahili · Albanian · Bosnian/Croatian/Serbian · Bulgarian · Pashto · Urdu · Bengali · Indonesian · Filipino
 
 ## Usage
 
@@ -45,7 +46,7 @@ In the plural, letters that change compared to the singular are printed black, t
 ## How it works
 
 The cards are HTML, printed to PDF with headless Chrome ([Puppeteer](https://pptr.dev)).
-That way right-to-left scripts (Arabic, Farsi, Hebrew) and complex scripts (Hindi, Thai, Chinese, Japanese, Korean, Georgian) are set correctly.
+That way right-to-left scripts (Arabic, Farsi, Hebrew, Urdu, Pashto) and complex scripts (Hindi, Bengali, Thai, Chinese, Japanese, Korean, Georgian) are set correctly.
 The German words use Noto Sans Bold (`fonts/`, SIL Open Font License); the translation fonts come from Google Fonts, so generating needs an internet connection.
 
 ## License
