@@ -47,8 +47,21 @@ In the plural, letters that change compared to the singular are printed black, t
 
 The cards are HTML, printed to PDF with headless Chrome ([Puppeteer](https://pptr.dev)).
 That way right-to-left scripts (Arabic, Farsi, Hebrew, Urdu, Pashto) and complex scripts (Hindi, Bengali, Thai, Chinese, Japanese, Korean, Georgian) are set correctly.
-The German words use Noto Sans Bold (`fonts/`, SIL Open Font License); the translation fonts come from Google Fonts, so generating needs an internet connection.
+
+## Fonts
+
+Only free fonts under the [SIL Open Font License 1.1](https://openfontlicense.org), all loaded locally – generating needs no internet connection and sends nothing to Google Fonts:
+
+| Font | Used for | Source |
+|---|---|---|
+| Noto Sans Bold | German words, Latin, Cyrillic, Devanagari | [`fonts/`](fonts/) with [`OFL.txt`](fonts/OFL.txt) |
+| Noto Sans Arabic, Hebrew, Bengali, Thai, Georgian, SC, JP, KR (SemiBold) | translations in these scripts | [Fontsource](https://fontsource.org) npm packages, installed by `npm install` (license file in each package) |
+
+There is no system font fallback (no Arial, Helvetica or Segoe), so the PDFs embed Noto fonts only.
+Check a PDF with `pdffonts output/cards-japanese-a4.pdf`.
+The fonts are embedded in the PDFs as subsets, which the OFL allows: you may print, share and sell the PDFs.
 
 ## License
 
-MIT – see [LICENSE](LICENSE).
+Code and word list: MIT – see [LICENSE](LICENSE).
+Fonts: SIL Open Font License 1.1 – see [`fonts/OFL.txt`](fonts/OFL.txt) and the `LICENSE` file in each `@fontsource` package.

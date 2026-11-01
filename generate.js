@@ -10,8 +10,14 @@
 // Output: output/cards-<lang>-<format>.pdf
 const fs = require("fs");
 const path = require("path");
+const { pathToFileURL } = require("url");
 const { parse } = require("csv-parse/sync");
 const puppeteer = require("puppeteer");
+
+// All fonts are local and SIL Open Font License: Noto Sans Bold in fonts/, the other scripts from the @fontsource npm packages.
+// No Google Fonts CDN and no system font as fallback, so nothing else ends up embedded in the PDF.
+const SCRIPT_FONTS = ["arabic", "hebrew", "devanagari", "bengali", "thai", "georgian", "sc", "jp", "kr"]
+  .map((name) => pathToFileURL(require.resolve(`@fontsource/noto-sans-${name}/600.css`)).href);
 
 const args = Object.fromEntries(
   process.argv.slice(2).map((arg) => {
@@ -70,16 +76,15 @@ function html(lang) {
   for (let i = 0; i < words.length; i += perPage) {
     pages.push(`<section class="page"><div class="grid">${words.slice(i, i + perPage).map((entry) => card(entry, lang)).join("")}</div></section>`);
   }
-  // embedded as data URL: Chrome does not load file:// fonts into a page created with setContent
-  const font = `data:font/ttf;base64,${fs.readFileSync(path.join(__dirname, "fonts/NotoSans-Bold.ttf")).toString("base64")}`;
+  const font = pathToFileURL(path.join(__dirname, "fonts/NotoSans-Bold.ttf")).href;
   const page = FORMAT === "a4" ? { size: "A4 landscape", w: "297mm", h: "210mm", pad: "5mm", cols: 4 } : { size: "74mm 52mm", w: "74mm", h: "52mm", pad: "0mm", cols: 1 };
   return `<!doctype html><html lang="de"><head><meta charset="utf-8">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@600&family=Noto+Sans+Hebrew:wght@600&family=Noto+Sans+Devanagari:wght@600&family=Noto+Sans+Thai:wght@600&family=Noto+Sans+Georgian:wght@600&family=Noto+Sans+SC:wght@600&family=Noto+Sans+JP:wght@600&family=Noto+Sans+KR:wght@600&family=Noto+Sans+Bengali:wght@600&display=block">
+${SCRIPT_FONTS.map((href) => `<link rel="stylesheet" href="${href}">`).join("\n")}
 <style>
 @font-face { font-family: "Noto Sans Card"; src: url("${font}"); font-weight: 700; }
 @page { size: ${page.size}; margin: 0; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: "Noto Sans Card", sans-serif; font-weight: 700; color: #000; }
+body { font-family: "Noto Sans Card"; font-weight: 700; color: #000; }
 .page { width: ${page.w}; height: ${page.h}; padding: ${page.pad}; break-after: page; }
 .grid { display: grid; grid-template-columns: repeat(${page.cols}, 1fr); grid-template-rows: repeat(${page.cols}, 1fr); width: 100%; height: 100%; }
 .card { position: relative; border: 2.4mm solid #000; overflow: hidden; container-type: inline-size; }
@@ -91,9 +96,9 @@ body { font-family: "Noto Sans Card", sans-serif; font-weight: 700; color: #000;
 .pl b { color: #000; }
 .tr { position: absolute; right: 0; bottom: 0; max-width: 100%; background: #000; color: #fff; padding: 0.6mm 1.6mm 0.9mm;
   font-size: 8.5pt; line-height: 1.25; white-space: nowrap; font-family: "Noto Sans Card", "Noto Sans Arabic", "Noto Sans Hebrew",
-  "Noto Sans Devanagari", "Noto Sans Bengali", "Noto Sans Thai", "Noto Sans Georgian", "Noto Sans SC", sans-serif; }
-.tr[lang="ja"] { font-family: "Noto Sans JP", sans-serif; }
-.tr[lang="ko"] { font-family: "Noto Sans KR", sans-serif; }
+  "Noto Sans Devanagari", "Noto Sans Bengali", "Noto Sans Thai", "Noto Sans Georgian", "Noto Sans SC"; }
+.tr[lang="ja"] { font-family: "Noto Sans Card", "Noto Sans JP"; }
+.tr[lang="ko"] { font-family: "Noto Sans Card", "Noto Sans KR"; }
 </style></head><body>${pages.join("")}
 <script>
 // shrink words or translations that are too long for the card
@@ -121,11 +126,15 @@ async function main() {
   const browser = await puppeteer.launch();
   for (const lang of languages) {
     const tab = await browser.newPage();
-    await tab.setContent(html(lang), { waitUntil: "load", timeout: 120000 });
+    // loaded as a file (not setContent), so Chrome may read the local font files
+    const page = path.join(OUT, `.page-${lang}.html`);
+    fs.writeFileSync(page, html(lang));
+    await tab.goto(pathToFileURL(page).href, { waitUntil: "load", timeout: 120000 });
     await tab.evaluate(() => document.fonts.ready);
     const file = path.join(OUT, `cards-${lang === "none" ? "german" : lang}-${FORMAT}.pdf`);
     await tab.pdf({ path: file, preferCSSPageSize: true, printBackground: true });
     await tab.close();
+    fs.unlinkSync(page);
     console.log(`✅ ${path.relative(__dirname, file)}`);
   }
   await browser.close();
