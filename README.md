@@ -15,6 +15,12 @@ English · Ukrainian · French · Spanish · Farsi · Arabic · Hebrew · Turkis
 Dutch · Georgian · Hindi · Thai · Chinese (simplified) · Japanese · Korean · Russian · Polish · Kurdish (Kurmanji) · Vietnamese ·
 Swahili · Albanian · Bosnian/Croatian/Serbian · Bulgarian · Pashto · Urdu · Bengali · Indonesian · Filipino
 
+## Translations
+
+All translations were made by AI – **Anthropic Claude Opus 5.5** (November 2026; earlier versions partly used OpenAI gpt-4.1, all of those were replaced).
+They have not been checked by native speakers yet and may contain mistakes.
+Found a wrong or unusual word? Please open an issue or a pull request with the fix in `words.csv`.
+
 ## Usage
 
 Requires [Node.js](https://nodejs.org) 18 or newer.
